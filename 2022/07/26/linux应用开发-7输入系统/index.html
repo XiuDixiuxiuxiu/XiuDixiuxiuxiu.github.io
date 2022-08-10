@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="linux 应用开发-7 输入系统   linux 应用开发-7 输入系统 框架概述 APP 得到的数据 调试信息 读取信息命令 读取数据的方式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux 应用开发-7输入系统">
+<meta property="og:url" content="http://example.com/2022/07/26/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-7%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="Xiudi&#39;s Blog">
+<meta property="og:description" content="linux 应用开发-7 输入系统   linux 应用开发-7 输入系统 框架概述 APP 得到的数据 调试信息 读取信息命令 读取数据的方式">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-26T10:44:25.000Z">
+<meta property="article:modified_time" content="2022-08-02T12:10:01.938Z">
+<meta property="article:author" content="Xiudi">
+<meta property="article:tag" content="linux-应用开发">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/07/26/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-7%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/07/26/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-7%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F/","path":"2022/07/26/linux应用开发-7输入系统/","title":"linux 应用开发-7输入系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>linux 应用开发-7输入系统 | Xiudi's Blog</title>
+  
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" />
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<!-- 爆炸红心效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiudi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-7-%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.</span> <span class="nav-text">linux 应用开发-7 输入系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">框架概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#APP-%E5%BE%97%E5%88%B0%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.</span> <span class="nav-text">APP 得到的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E4%BF%A1%E6%81%AF"><span class="nav-number">1.3.</span> <span class="nav-text">调试信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E4%BF%A1%E6%81%AF%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">读取信息命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">读取数据的方式</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiudi"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Xiudi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/XiuDixiuxiuxiu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;XiuDixiuxiuxiu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-envelope fa-fw"></i>
+      xiudixiuxiuxiu@163.com
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/178489862" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;178489862" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hexo.io/" title="https:&#x2F;&#x2F;hexo.io" rel="noopener" target="_blank">Hexo</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/26/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-7%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Xiudi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="linux 应用开发-7输入系统 | Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux 应用开发-7输入系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-07-26 18:44:25" itemprop="dateCreated datePublished" datetime="2022-07-26T18:44:25+08:00">2022-07-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-08-02 20:10:01" itemprop="dateModified" datetime="2022-08-02T20:10:01+08:00">2022-08-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="linux-应用开发-7-输入系统"><a href="#linux-应用开发-7-输入系统" class="headerlink" title="linux 应用开发-7 输入系统"></a><div align = "center">linux 应用开发-7 输入系统</div></h1><!-- TOC -->
+
+<ul>
+<li><a href="#div-align--centerlinux-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-7-%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9Fdiv"><div align = "center">linux 应用开发-7 输入系统</div></a><ul>
+<li><a href="#%E6%A1%86%E6%9E%B6%E6%A6%82%E8%BF%B0">框架概述</a></li>
+<li><a href="#app-%E5%BE%97%E5%88%B0%E7%9A%84%E6%95%B0%E6%8D%AE">APP 得到的数据</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95%E4%BF%A1%E6%81%AF">调试信息</a></li>
+<li><a href="#%E8%AF%BB%E5%8F%96%E4%BF%A1%E6%81%AF%E5%91%BD%E4%BB%A4">读取信息命令</a></li>
+<li><a href="#%E8%AF%BB%E5%8F%96%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F">读取数据的方式</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<span id="more"></span>
+
+<h2 id="框架概述"><a href="#框架概述" class="headerlink" title="框架概述"></a>框架概述</h2><blockquote>
+<p>先来了解什么是输入设备？</p>
+<blockquote>
+<p>常见的输入设备有键盘、鼠标、遥控杆、书写板、触摸屏等等,用户通过这些输入设备与 Linux 系统进行数据交换。</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>什么是输入系统？<br>输入设备种类繁多，能否统一它们的接口？既在驱动层面统一，也在应用程序层面统一？可以的。</p>
+<blockquote>
+<p>Linux 系统为了统一管理这些输入设备，实现了一套能兼容所有输入设备的框架：输入系统。驱动开发人员基于这套框架开发出程序，应用开发人员就可以使用统一的 API 去使用设备。</p>
+</blockquote>
+</blockquote>
+<div align=center><img  src ="https://pic.imgdb.cn/item/62df9f3cf54cd3f9375fcfa0.jpg"/></div>
+
+<p>访问设备节点流程:<br><span id="inline-toc">1.</span>APP 发起读操作，若无数据则休眠<br><span id="inline-toc">2.</span>用户操作设备，硬件上产生中断<br><span id="inline-toc">3.</span></p>
+<blockquote>
+<p>输入系统驱动层对应的驱动程序处理中断</p>
+<blockquote>
+<p>读取到数据，转换为标准的输入事件，向核心层汇报。<br>所谓输入事件就是一个“struct input_event”结构体</p>
+</blockquote>
+</blockquote>
+<p><span id="inline-toc">4.</span></p>
+<blockquote>
+<p>输入系统驱动层对应的驱动程序处理中断</p>
+<blockquote>
+<p>从 handler 的名字来看，它就是用来处输入操作的。有多种 handler，比如：evdev_handler、kbd_handler、joydev_handler 等等。<br>最常用的是 evdev_handler：它只是把 input_event 结构体保存在内核 buffer 等，APP 来读取时就原原本本地返回。它支持多个 APP 同时访问输入设备，每个 APP 都可以获得同一份输入事件。<br>当 APP 正在等待数据时，evdev_handler 会把它唤醒，这样 APP 就可以返回数据</p>
+</blockquote>
+</blockquote>
+<p><span id="inline-toc">5.</span></p>
+<blockquote>
+<p>APP 对输入事件的处理</p>
+<blockquote>
+<p>APP 获得数据的方法有 2 种：直接访问设备节点(比如&#x2F;dev&#x2F;input&#x2F;event0,1,2,…)，或者通过 tslib、libinput 这类库来间接访问设备节点。这些库简化了对数据的处理。</p>
+</blockquote>
+</blockquote>
+<h2 id="APP-得到的数据"><a href="#APP-得到的数据" class="headerlink" title="APP 得到的数据"></a>APP 得到的数据</h2><p><span id="inline-toc">1.</span></p>
+<div class="note info"><p>内核中通过input_dev结构体来表示输入设备</p></div>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dfa3e4f54cd3f937796f6d.jpg"/></div>
+
+<p><span id="inline-toc">2.</span></p>
+<div class="note info"><p>APP得到数据input_event中,和timeval表示时间</p></div>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dfa480f54cd3f9377ccaea.jpg"/></div>
+
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span>:表示哪类事件</span><br><span class="line"></span><br><span class="line"><span class="title">code</span>:表示该类事件下的哪一个事件</span><br><span class="line"></span><br><span class="line"><span class="title">value</span>:表示事件值</span><br><span class="line"></span><br><span class="line">事件之间的界线,上报完事件后需要添加一个同步事件,它的<span class="keyword">type</span>、code、value三项都是0</span><br></pre></td></tr></table></figure>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dfa560f54cd3f9378172d9.jpg"/></div>
+
+<h2 id="调试信息"><a href="#调试信息" class="headerlink" title="调试信息"></a>调试信息</h2><p>输入设备的设备节点名为&#x2F;dev&#x2F;input&#x2F;eventX(也可能是&#x2F;dev&#x2F;eventX，X 表示 0、1、2 等数字)。查看设备节点，可以执行以下命令：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ls <span class="regexp">/dev/i</span>nput/* -l</span><br><span class="line">或</span><br><span class="line">ls <span class="regexp">/dev/</span>event* -l</span><br></pre></td></tr></table></figure>
+
+<p>怎么知道这些设备节点对应什么硬件呢？可以在板子上执行以下命令：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat <span class="regexp">/proc/</span>bus<span class="regexp">/input/</span>devices</span><br></pre></td></tr></table></figure>
+
+<p>这条指令的含义就是获取与 event 对应的相关设备信息，可以看到类似以下的结果：</p>
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dfa669f54cd3f937871c1e.jpg"/></div>
+
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">I</span>:<span class="variable">id</span> <span class="variable">of</span> <span class="variable">the</span> <span class="function"><span class="title">device</span>(设备<span class="variable">ID</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">N</span>:<span class="variable">name</span> <span class="variable">of</span> <span class="variable">the</span> <span class="function"><span class="title">device</span>(设备名称)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">P</span>:<span class="variable">physical</span> <span class="variable">path</span> <span class="variable">to</span> <span class="variable">the</span> <span class="variable">device</span> <span class="variable"><span class="keyword">in</span></span> <span class="variable">the</span> <span class="variable">system</span> <span class="function"><span class="title">hierarchy</span>(系统层次结构中设备的物理路径)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">S</span>:<span class="variable">sysfs</span> <span class="function"><span class="title">path</span>(位于<span class="variable">sys</span>文件系统的路径)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">U</span>:<span class="variable">unique</span> <span class="variable">identification</span> <span class="variable">code</span> <span class="variable">for</span> <span class="variable">the</span> <span class="function"><span class="title">device</span>(<span class="variable"><span class="keyword">if</span></span> <span class="variable">device</span> <span class="variable">has</span> <span class="variable">it</span>)(设备的唯一标识码)</span></span><br><span class="line"></span><br><span class="line"><span class="variable">H</span>:<span class="variable">list</span> <span class="variable">of</span> <span class="variable">input</span> <span class="variable">handles</span> <span class="variable">associated</span> <span class="variable">with</span> <span class="variable">the</span> <span class="variable">device</span>.(与设备关联的输入句柄列表)</span><br><span class="line"></span><br><span class="line"><span class="variable">B</span>:<span class="function"><span class="title">bitmaps</span>(位图)</span></span><br><span class="line">    <span class="variable">PROP</span>:<span class="variable">device</span> <span class="variable">properties</span> <span class="variable"><span class="keyword">and</span></span> <span class="function"><span class="title">quirks</span>(设备属性)</span></span><br><span class="line">    <span class="variable">EV</span>:<span class="variable">types</span> <span class="variable">of</span> <span class="variable">events</span> <span class="variable">supported</span> <span class="variable">by</span> <span class="variable">the</span> <span class="function"><span class="title">device</span>(设备支持的事件类型)</span></span><br><span class="line">    <span class="variable">KEY</span>:<span class="variable">keys</span>/<span class="variable">buttons</span> <span class="variable">this</span> <span class="variable">device</span> <span class="function"><span class="title">has</span>(此设备具有的键/按钮)</span></span><br><span class="line">    <span class="variable">MSC</span>:<span class="variable">miscellaneous</span> <span class="variable">events</span> <span class="variable">supported</span> <span class="variable">by</span> <span class="variable">the</span> <span class="function"><span class="title">device</span>(设备支持的其他事件)</span></span><br><span class="line">    <span class="variable">LED</span>:<span class="variable">leds</span> <span class="variable">present</span> <span class="variable">on</span> <span class="variable">the</span> <span class="function"><span class="title">device</span>(设备上的指示灯)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dfa742f54cd3f9378b9b45.jpg"/></div>
+
+<h2 id="读取信息命令"><a href="#读取信息命令" class="headerlink" title="读取信息命令"></a>读取信息命令</h2><p>调试输入系统时，直接执行类似下面的命令，然后操作对应的输入设备即可读出数据：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexdump <span class="regexp">/dev/i</span>nput/event0</span><br></pre></td></tr></table></figure>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dfa79ff54cd3f9378d7d1f.jpg"/></div>
+
+<h2 id="读取数据的方式"><a href="#读取数据的方式" class="headerlink" title="读取数据的方式"></a>读取数据的方式</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">查询:</span><br><span class="line">    <span class="keyword">APP</span>调用<span class="keyword">open</span>函数时，传入“O_NONBLOCK”表示“非阻塞”。</span><br><span class="line">    <span class="keyword">APP</span>调用<span class="keyword">read</span>函数读取数据时，如果驱动程序中有数据，那么<span class="keyword">APP</span>的<span class="keyword">read</span>函数会返回数据，否则也会立刻返回错误。</span><br><span class="line"></span><br><span class="line">休眠-唤醒方式:</span><br><span class="line">    PP调用<span class="keyword">open</span>函数时，不要传入“O_NONBLOCK”。</span><br><span class="line">    <span class="keyword">APP</span>调用<span class="keyword">read</span>函数读取数据时，如果驱动程序中有数据，那么<span class="keyword">APP</span>的<span class="keyword">read</span>函数会返回数据；否则<span class="keyword">APP</span>就会在内核态休眠，当有数据时驱动程序会把<span class="keyword">APP</span>唤醒，<span class="keyword">read</span>函数恢复执行并返回数据给<span class="keyword">APP</span></span><br><span class="line"></span><br><span class="line">POLL/SELECT方式:</span><br><span class="line">    定时查询</span><br><span class="line"></span><br><span class="line">异步通知方式:</span><br><span class="line">    所谓异步通知，就是<span class="keyword">APP</span>可以忙自己的事，当驱动程序用数据时它会主动给<span class="keyword">APP</span>发信号，这会导致<span class="keyword">APP</span>执行信号处理函数。</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" rel="tag"># linux-应用开发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/25/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-6%E6%96%87%E5%AD%97%E6%98%BE%E7%A4%BA%E5%8F%8A%E5%9B%BE%E5%83%8F%E6%98%BE%E7%A4%BA/" rel="prev" title="linux 应用开发-6文字显示及图像显示">
+                  <i class="fa fa-chevron-left"></i> linux 应用开发-6文字显示及图像显示
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/08/01/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-8%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" rel="next" title="linux 应用开发-8网络编程">
+                  linux 应用开发-8网络编程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiudi</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+<div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("07/1/2022 00:00:00");
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+</div>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<div class="moon-menu">
+  <div class="moon-menu-items">
+    
+    <div id="moon-menu-item-back2bottom" class="moon-menu-item">
+      <i class='fas fa-chevron-down'></i>    </div>
+    
+    <div id="moon-menu-item-back2top" class="moon-menu-item">
+      <i class='fas fa-chevron-up'></i>    </div>
+    
+  </div>
+  <div class="moon-menu-button">
+    <svg class="moon-menu-bg">
+      <circle class="moon-menu-cricle" cx="50%" cy="50%" r="44%"></circle>
+      <circle class="moon-menu-border" cx="50%" cy="50%" r="48%"></circle>
+    </svg>
+    <div class="moon-menu-content">
+      <div class="moon-menu-icon"><i class='fas fa-ellipsis-v'></i></div>
+      <div class="moon-menu-text"></div>
+    </div>
+  </div>
+</div><script src="/js/injector.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":300,"height":450},"mobile":{"show":true},"log":false});</script></body>
+</html>

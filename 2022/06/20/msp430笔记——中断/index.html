@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="msp430 笔记——中断   msp430 笔记——中断 1、i&#x2F;o 中断初始化 2、定时器中断 1、比较 2、捕获">
+<meta property="og:type" content="article">
+<meta property="og:title" content="msp430笔记——中断">
+<meta property="og:url" content="http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD/index.html">
+<meta property="og:site_name" content="Xiudi&#39;s Blog">
+<meta property="og:description" content="msp430 笔记——中断   msp430 笔记——中断 1、i&#x2F;o 中断初始化 2、定时器中断 1、比较 2、捕获">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:/Users/xiudi/AppData/Roaming/Typora/typora-user-images/image-20210614212838596.png">
+<meta property="og:image" content="c:/Users/xiudi/AppData/Roaming/Typora/typora-user-images/image-20210614213053216.png">
+<meta property="og:image" content="c:/Users/xiudi/AppData/Roaming/Typora/typora-user-images/image-20210615181205852.png">
+<meta property="og:image" content="c:/Users/xiudi/AppData/Roaming/Typora/typora-user-images/image-20210615181533212.png">
+<meta property="article:published_time" content="2022-06-20T15:44:26.000Z">
+<meta property="article:modified_time" content="2022-07-24T10:21:37.475Z">
+<meta property="article:author" content="Xiudi">
+<meta property="article:tag" content="msp430笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/xiudi/AppData/Roaming/Typora/typora-user-images/image-20210614212838596.png">
+
+
+<link rel="canonical" href="http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD/","path":"2022/06/20/msp430笔记——中断/","title":"msp430笔记——中断"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>msp430笔记——中断 | Xiudi's Blog</title>
+  
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" />
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<!-- 爆炸红心效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiudi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#msp430-%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD"><span class="nav-number">1.</span> <span class="nav-text">msp430 笔记——中断</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81i-x2F-o-%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">1、i&#x2F;o 中断初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%AD%E6%96%AD"><span class="nav-number">1.2.</span> <span class="nav-text">2、定时器中断</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E6%AF%94%E8%BE%83"><span class="nav-number">1.2.1.</span> <span class="nav-text">1、比较</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E6%8D%95%E8%8E%B7"><span class="nav-number">1.2.2.</span> <span class="nav-text">2、捕获</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiudi"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Xiudi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/XiuDixiuxiuxiu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;XiuDixiuxiuxiu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-envelope fa-fw"></i>
+      xiudixiuxiuxiu@163.com
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/178489862" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;178489862" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hexo.io/" title="https:&#x2F;&#x2F;hexo.io" rel="noopener" target="_blank">Hexo</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Xiudi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="msp430笔记——中断 | Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          msp430笔记——中断
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-20 23:44:26" itemprop="dateCreated datePublished" datetime="2022-06-20T23:44:26+08:00">2022-06-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-24 18:21:37" itemprop="dateModified" datetime="2022-07-24T18:21:37+08:00">2022-07-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/msp430/" itemprop="url" rel="index"><span itemprop="name">msp430</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="msp430-笔记——中断"><a href="#msp430-笔记——中断" class="headerlink" title="msp430 笔记——中断"></a>msp430 笔记——中断</h1><!-- TOC -->
+
+<ul>
+<li><a href="#msp430-%E7%AC%94%E8%AE%B0%E4%B8%AD%E6%96%AD">msp430 笔记——中断</a><ul>
+<li><a href="#1io-%E4%B8%AD%E6%96%AD%E5%88%9D%E5%A7%8B%E5%8C%96">1、i&#x2F;o 中断初始化</a></li>
+<li><a href="#2%E5%AE%9A%E6%97%B6%E5%99%A8%E4%B8%AD%E6%96%AD">2、定时器中断</a><ul>
+<li><a href="#1%E6%AF%94%E8%BE%83">1、比较</a></li>
+<li><a href="#2%E6%8D%95%E8%8E%B7">2、捕获</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<span id="more"></span>
+
+<h2 id="1、i-x2F-o-中断初始化"><a href="#1、i-x2F-o-中断初始化" class="headerlink" title="1、i&#x2F;o 中断初始化"></a>1、i&#x2F;o 中断初始化</h2><p>​ P1 和 P2 口中断，端口中断 当对 PxIFG,PxIE 及 PxIES 寄存器进行相应的配置后，P1 和 P2 口的每一个管 脚都可具备中断能力。</p>
+<p>​ 所有 P1 口中断标志是有优先级的，如 P1IFG.0 具有最高 优先级，它们组合共用一个中断向量。使能的具有最高优先级中断在 P1IV 中产 生 1 个数值。为了跳转到适当的程序位置，对该数值评估或加到程序计数器上。 禁止 P1 口中断不会影响 P1IV 寄存器中的值。</p>
+<!--more-->
+
+<p>​ P2 口具有相同的功能。PxIV 寄 存器只能以字形式访问。</p>
+<p>​ (注意)任何对 P1IV 寄存器的读写操作都会自动使最高响应优先级中断标志复位。 如果另外一个中断标志置位，则在响应最初中断后立即产生另一中断。</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PxIES——中断沿选择寄存器</span><br><span class="line">			每个 PxIES 位为相应的 I/O 管脚选择中断沿。</span><br><span class="line"> 			Bit <span class="operator">=</span> <span class="number">0</span>：上升沿时置位各自的 PxIFGx 标志</span><br><span class="line">			Bit <span class="operator">=</span> <span class="number">1</span>：下降沿时置位各自的 PxIFGx 标志</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PXIE——中断使能寄存器</span><br><span class="line">		  	每个 PxIE 位将使能相应的 PxIFG 中断标志。</span><br><span class="line">			Bit <span class="operator">=</span> <span class="number">0</span>：Px 口中断禁止</span><br><span class="line">			Bit <span class="operator">=</span> <span class="number">1</span>：Px 口中断使能</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PXIFG——中断标志位</span><br><span class="line">		  	每个 PxIFGx 位都是相应 I/O 管脚的中断标志位，当管脚上有选择的输入信号沿到来			时，PxIFGx 置位。当相应的 PxIE 位和 GIE 位置位时，所有的 PxIFGx中断标志			产生中断请求。软件也可以使 PxIFG 标志置位，这就提供了一种软件产生中断的方法。</span><br><span class="line"></span><br><span class="line">			Bit <span class="operator">=</span> <span class="number">0</span>： 没有中断挂起</span><br><span class="line">			Bit <span class="operator">=</span> <span class="number">1</span>： 中断挂起</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">初始化中断：</span><br><span class="line">	P1DIR |= BIT1;	<span class="regexp">//</span>P1.<span class="number">1</span>方向为输入</span><br><span class="line">    P1REN |= BIT1;	<span class="regexp">//</span>P1.<span class="number">1</span>允许上下拉电阻</span><br><span class="line">    P1OUT |= BIT1;	<span class="regexp">//</span>P1.<span class="number">1</span>上拉电阻</span><br><span class="line"></span><br><span class="line">    P1IES |= BIT1;	<span class="regexp">//</span>下降沿中断</span><br><span class="line">    P1IE |= BIT1;	<span class="regexp">//</span>P1.<span class="number">1</span>中断允许</span><br><span class="line">    P1IFG &amp;= ~BIT1;	<span class="regexp">//</span>清除标志位</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">中断函数：</span><br><span class="line">    <span class="meta">#pragma vector = PORT1_VECTOR	<span class="comment">//中断的必须写法</span></span></span><br><span class="line">    __interrupt void P1_ISR()		<span class="comment">//中断函数名称</span></span><br><span class="line">    &#123;</span><br><span class="line">        if(P1IFG <span class="meta">&amp; BIT1)&#123;			<span class="comment">//判断中断标志位</span></span></span><br><span class="line">            while((P1IN <span class="meta">&amp; BIT1) == 0);	<span class="comment">//识别按键按下</span></span></span><br><span class="line">                P1OUT <span class="string">|= BIT0;</span></span><br><span class="line">                delay(<span class="number">1000</span>);</span><br><span class="line">                P1OUT ^= BIT0;</span><br><span class="line">        &#125;</span><br><span class="line">        P1IFG <span class="meta">&amp;= ~BIT1;				<span class="comment">//清除标志位</span></span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、定时器中断"><a href="#2、定时器中断" class="headerlink" title="2、定时器中断"></a>2、定时器中断</h2><p>​ MSP430F5529 共有两类共 4 个定时器，分别是 Timer_A 定时器 3 个和 Timer_B 定时器 1 个，按照每个寄存器配备的捕获&#x2F;比较器的个数分别命名为</p>
+<p>​ Timer0_A（内有 5 个捕获比较器）</p>
+<p>​ Timer1_A（3 个）</p>
+<p>​ Timer2_A（3 个）</p>
+<p>​ Timer0_B（7 个）</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Timer_A 特性包括：</span><br><span class="line">带有<span class="number"> 4 </span>种操作模式的异步<span class="number"> 16 </span>位定时/计数器</span><br><span class="line">	时钟源可选择，可配置</span><br><span class="line">	可配置捕获/比较寄存器数多达<span class="number"> 7 </span>个</span><br><span class="line">	有 PWM 输出功能的可配置输出</span><br><span class="line">	异步输入和同步锁存</span><br><span class="line">	对 Timer_A 中断快速响应的中断向量寄存器</span><br></pre></td></tr></table></figure>
+
+<p>定时器分为两种模式：比较、捕获</p>
+<p>​ 比较：当 CAP&#x3D;0 时，选择比较模式。比较模式用来产生 PWM 输出信号或者特定的定时中 断。</p>
+<p>​ 捕获：当 CAP&#x3D;1 时，选择捕获模式。捕获模式用来记录时间事件。它可用于速度计算或时间 测量。捕获输入 CCIxA 和 CCIxB 可以连接到外部管脚或者内部信号，由 CCISx 位选 择。CMx 位选择输入信号的上升沿、 下降沿或者上升沿和下降沿作为捕获沿。在所选 择的输入信号的触发沿时，产生捕获。</p>
+<h3 id="1、比较"><a href="#1、比较" class="headerlink" title="1、比较"></a>1、比较</h3><p><img src="C:\Users\xiudi\AppData\Roaming\Typora\typora-user-images\image-20210614212838596.png" alt="image-20210614212838596"></p>
+<p><img src="C:\Users\xiudi\AppData\Roaming\Typora\typora-user-images\image-20210614213053216.png" alt="image-20210614213053216"></p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">初始化：</span><br><span class="line">TA0CTL = TASSEL__SMCLK + MC__UP +ID__8 + TACLR; <span class="regexp">//</span>SMCLK时钟，上增，分频，使能</span><br><span class="line">TA0CCR0 = <span class="number">31250</span>*<span class="number">2</span>;								<span class="regexp">//</span>上限值</span><br><span class="line">TA0CCTL0 = CCIE;								<span class="regexp">//</span>比较器使能</span><br><span class="line">_EINT();										<span class="regexp">//</span>全部中断允许</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">比较——呼吸灯：</span><br><span class="line"><span class="comment">#include &lt;msp430.h&gt;</span></span><br><span class="line"></span><br><span class="line">void main(void)</span><br><span class="line">&#123;</span><br><span class="line">    unsigned int cnt = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	WDTCTL = WDTPW | WDTHOLD;	<span class="regexp">//</span> stop watchdog timer</span><br><span class="line"></span><br><span class="line">	TA0CTL |= TASSEL_2;			<span class="regexp">//</span>调试定时器<span class="number">0</span>，时钟SMCKL，增减模式</span><br><span class="line">	TA0CTL |= MC_0 | MC_1;</span><br><span class="line">	TA0CCR0 = <span class="number">0</span>x00FF;</span><br><span class="line">	TA0CCR1 = <span class="number">0</span>x00FF;</span><br><span class="line"></span><br><span class="line">	TA0CCTL0 &amp;= ~CAP;			<span class="regexp">//</span>寄存器<span class="number">0</span>：比较模式</span><br><span class="line">	TA0CCTL1 &amp;= ~CAP;			<span class="regexp">//</span>寄存器<span class="number">1</span>：比较模式</span><br><span class="line">	TA0CCTL1 |= OUTMOD_6;		<span class="regexp">//</span>寄存器<span class="number">1</span>：捕获/比较 <span class="number">6</span></span><br><span class="line"></span><br><span class="line">	P1SEL |= BIT2;				<span class="regexp">//</span>P1.<span class="number">2</span>第二功能</span><br><span class="line">	P1DIR |= BIT2;				<span class="regexp">//</span>P1.<span class="number">2</span>输出</span><br><span class="line"></span><br><span class="line">	P1DIR |= BIT0;				<span class="regexp">//</span>P1.<span class="number">0</span>输出</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">	&#123;</span><br><span class="line">	    <span class="keyword">for</span>(cnt = <span class="number">0</span>;cnt &lt; <span class="number">0</span>x00FF; cnt++)		<span class="regexp">//</span>用查询法实现呼吸灯</span><br><span class="line">	    &#123;</span><br><span class="line">	               TA0CCR1 =  cnt;</span><br><span class="line">	               __delay_cycles(<span class="number">5000</span>);</span><br><span class="line">	    &#125;</span><br><span class="line"></span><br><span class="line">	    <span class="keyword">for</span>(cnt = <span class="number">0</span>x00FF;cnt &gt; <span class="number">0</span>; cnt--)</span><br><span class="line">	    &#123;</span><br><span class="line">	               TA0CCR1 =  cnt;</span><br><span class="line">	               __delay_cycles(<span class="number">5000</span>);</span><br><span class="line">	    &#125;</span><br><span class="line">	 &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、捕获"><a href="#2、捕获" class="headerlink" title="2、捕获"></a>2、捕获</h3><p><img src="C:\Users\xiudi\AppData\Roaming\Typora\typora-user-images\image-20210615181205852.png" alt="image-20210615181205852"></p>
+<p><img src="C:\Users\xiudi\AppData\Roaming\Typora\typora-user-images\image-20210615181533212.png" alt="image-20210615181533212"></p>
+<p>先设置总的定时器 Timer。</p>
+<p>当 CM 不等于 0 时，为捕获模式，同时 CAP 也要为 1，相关引脚设为第二功能。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">TA0CTL |= TASSEL_2;		<span class="regexp">//</span>设置中断信号源为SMCLK</span><br><span class="line">   TA0CTL |= MC_1;			<span class="regexp">//</span>上数模式</span><br><span class="line">   TA0CCR0 = <span class="number">49999</span>;		<span class="regexp">//</span>数值设为<span class="number">49999</span></span><br><span class="line">   TA0CTL = TAIE;			<span class="regexp">//</span>允许启动</span><br><span class="line"></span><br><span class="line">   TA0CCTL1 |= CAP;		<span class="regexp">//</span>捕获模式</span><br><span class="line">   TA0CCTL1 |= CM_1;		<span class="regexp">//</span>上升沿捕获</span><br><span class="line">   TA0CCTL1 |= CCIS0;		<span class="regexp">//</span>参考信号源</span><br><span class="line">   P1SEL |= BIT2;			<span class="regexp">//</span>引脚设为第二功能</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/msp430%E7%AC%94%E8%AE%B0/" rel="tag"># msp430笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94io%E5%8F%A3/" rel="prev" title="msp430笔记——io口">
+                  <i class="fa fa-chevron-left"></i> msp430笔记——io口
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/21/hello-world/" rel="next" title="Hello World">
+                  Hello World <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiudi</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+<div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("07/1/2022 00:00:00");
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+</div>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<div class="moon-menu">
+  <div class="moon-menu-items">
+    
+    <div id="moon-menu-item-back2bottom" class="moon-menu-item">
+      <i class='fas fa-chevron-down'></i>    </div>
+    
+    <div id="moon-menu-item-back2top" class="moon-menu-item">
+      <i class='fas fa-chevron-up'></i>    </div>
+    
+  </div>
+  <div class="moon-menu-button">
+    <svg class="moon-menu-bg">
+      <circle class="moon-menu-cricle" cx="50%" cy="50%" r="44%"></circle>
+      <circle class="moon-menu-border" cx="50%" cy="50%" r="48%"></circle>
+    </svg>
+    <div class="moon-menu-content">
+      <div class="moon-menu-icon"><i class='fas fa-ellipsis-v'></i></div>
+      <div class="moon-menu-text"></div>
+    </div>
+  </div>
+</div><script src="/js/injector.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":300,"height":450},"mobile":{"show":true},"log":false});</script></body>
+</html>

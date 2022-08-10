@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="linux 应用开发-3Makefile 规则   linux 应用开发-3Makefile 规则 Makefile 作用 Makefile 规则 Makefile 语法 Makefile 函数 Makefile 实例 通用 Makefile">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux 应用开发-3Makefile规则">
+<meta property="og:url" content="http://example.com/2022/07/23/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-3Makefile%E8%A7%84%E5%88%99/index.html">
+<meta property="og:site_name" content="Xiudi&#39;s Blog">
+<meta property="og:description" content="linux 应用开发-3Makefile 规则   linux 应用开发-3Makefile 规则 Makefile 作用 Makefile 规则 Makefile 语法 Makefile 函数 Makefile 实例 通用 Makefile">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-23T09:44:25.000Z">
+<meta property="article:modified_time" content="2022-07-23T14:39:12.721Z">
+<meta property="article:author" content="Xiudi">
+<meta property="article:tag" content="linux-应用开发">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/07/23/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-3Makefile%E8%A7%84%E5%88%99/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/07/23/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-3Makefile%E8%A7%84%E5%88%99/","path":"2022/07/23/linux应用开发-3Makefile规则/","title":"linux 应用开发-3Makefile规则"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>linux 应用开发-3Makefile规则 | Xiudi's Blog</title>
+  
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" />
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<!-- 爆炸红心效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiudi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linux-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-3Makefile-%E8%A7%84%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">linux 应用开发-3Makefile 规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile-%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">Makefile 作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile-%E8%A7%84%E5%88%99"><span class="nav-number">1.2.</span> <span class="nav-text">Makefile 规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile-%E8%AF%AD%E6%B3%95"><span class="nav-number">1.3.</span> <span class="nav-text">Makefile 语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile-%E5%87%BD%E6%95%B0"><span class="nav-number">1.4.</span> <span class="nav-text">Makefile 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile-%E5%AE%9E%E4%BE%8B"><span class="nav-number">1.5.</span> <span class="nav-text">Makefile 实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E7%94%A8-Makefile"><span class="nav-number">1.6.</span> <span class="nav-text">通用 Makefile</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiudi"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Xiudi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/XiuDixiuxiuxiu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;XiuDixiuxiuxiu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-envelope fa-fw"></i>
+      xiudixiuxiuxiu@163.com
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/178489862" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;178489862" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hexo.io/" title="https:&#x2F;&#x2F;hexo.io" rel="noopener" target="_blank">Hexo</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/07/23/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-3Makefile%E8%A7%84%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Xiudi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="linux 应用开发-3Makefile规则 | Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          linux 应用开发-3Makefile规则
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-07-23 17:44:25 / 修改时间：22:39:12" itemprop="dateCreated datePublished" datetime="2022-07-23T17:44:25+08:00">2022-07-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="linux-应用开发-3Makefile-规则"><a href="#linux-应用开发-3Makefile-规则" class="headerlink" title="linux 应用开发-3Makefile 规则"></a><div align = "center">linux 应用开发-3Makefile 规则</div></h1><!-- TOC -->
+
+<ul>
+<li><a href="#div-align--centerlinux-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-3makefile-%E8%A7%84%E5%88%99div"><div align = "center">linux 应用开发-3Makefile 规则</div></a><ul>
+<li><a href="#makefile-%E4%BD%9C%E7%94%A8">Makefile 作用</a></li>
+<li><a href="#makefile-%E8%A7%84%E5%88%99">Makefile 规则</a></li>
+<li><a href="#makefile-%E8%AF%AD%E6%B3%95">Makefile 语法</a></li>
+<li><a href="#makefile-%E5%87%BD%E6%95%B0">Makefile 函数</a></li>
+<li><a href="#makefile-%E5%AE%9E%E4%BE%8B">Makefile 实例</a></li>
+<li><a href="#%E9%80%9A%E7%94%A8-makefile">通用 Makefile</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<span id="more"></span>
+
+<h2 id="Makefile-作用"><a href="#Makefile-作用" class="headerlink" title="Makefile 作用"></a>Makefile 作用</h2><p>makefile 就是对文件分别编译,最后链接在一起,避免全部文件都编译一次</p>
+<h2 id="Makefile-规则"><a href="#Makefile-规则" class="headerlink" title="Makefile 规则"></a>Makefile 规则</h2><figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">规则</span><br><span class="line">目标文件:依赖<span class="number">1</span> 依赖<span class="number">2</span> ...</span><br><span class="line">[<span class="symbol">Tab</span>] 命令</span><br></pre></td></tr></table></figure>
+
+<div class="note success"><p>目标文件不存在</p></div>
+<div class="note success"><p>当"依赖"比"目标"新,执行命令</p></div>
+
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">test:<span class="selector-tag">a</span><span class="selector-class">.o</span> <span class="selector-tag">b</span><span class="selector-class">.o</span></span><br><span class="line">    gcc -o test <span class="selector-tag">a</span><span class="selector-class">.o</span> <span class="selector-tag">b</span><span class="selector-class">.o</span></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-class">.o</span>:<span class="selector-tag">a</span><span class="selector-class">.c</span></span><br><span class="line">    gcc -c -o <span class="selector-tag">a</span><span class="selector-class">.o</span> <span class="selector-tag">a</span><span class="selector-class">.c</span></span><br><span class="line"><span class="selector-tag">b</span><span class="selector-class">.o</span>:<span class="selector-tag">b</span><span class="selector-class">.c</span></span><br><span class="line">    gcc -c -o <span class="selector-tag">b</span><span class="selector-class">.o</span> <span class="selector-tag">b</span>.c</span><br></pre></td></tr></table></figure>
+
+<h2 id="Makefile-语法"><a href="#Makefile-语法" class="headerlink" title="Makefile 语法"></a>Makefile 语法</h2><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">:=  #即时变量</span><br><span class="line"><span class="section">=   #延时变量</span></span><br><span class="line">?=  #延时变量,如果是第一次定义才起效,如果在前面该变量已定义则忽略这句</span><br><span class="line">+=  #附加,它是即时变量,还是延时变量取决于前面的定义</span><br></pre></td></tr></table></figure>
+
+<blockquote class="blockquote-center">
+<blockquote>
+<p>即时变量,延时变量,export</p>
+<blockquote>
+<p>A :&#x3D; xxx #A 的值即刻确定,在定义时即确定<br>B &#x3D; xxx #B 的值使用到时才确定</p>
+<blockquote>
+<p>即时就是当前赋值,延时就是全局生效,之前的变量也会跟着改变</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>通配符: %.o</p>
+<blockquote>
+<p>$@ 表示目标<br>$&lt; 表示第 1 个依赖文件<br>$^ 表示所有依赖文件</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>假象目标: .PHONY</p>
+<blockquote>
+<p>.PHONY: clean 假想 clean 文件,就算存在 clean 文件,也能执行 clean 命令</p>
+</blockquote>
+</blockquote>
+
+</blockquote>
+
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">test: </span>a.o b.o ...</span><br><span class="line">    gcc -o test a.o b.o ...</span><br><span class="line"></span><br><span class="line">%.o:%.c</span><br><span class="line">    gcc -c -o $@ $&lt;</span><br><span class="line"></span><br><span class="line">clean:</span><br><span class="line">    rm *.o test</span><br><span class="line"></span><br><span class="line">.PHONY: clean</span><br></pre></td></tr></table></figure>
+
+<h2 id="Makefile-函数"><a href="#Makefile-函数" class="headerlink" title="Makefile 函数"></a>Makefile 函数</h2><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="constructor">$(<span class="params">foreach</span> <span class="params">var</span>, <span class="params">list</span>, <span class="params">text</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="constructor">$(<span class="params">filter</span> <span class="params">pattern</span><span class="operator">...</span>, <span class="params">text</span>)</span>      #在text中取出符合pattern格式的值</span><br><span class="line"><span class="constructor">$(<span class="params">filter</span>-<span class="params">out</span> <span class="params">pattern</span><span class="operator">...</span>, <span class="params">text</span>)</span>  #在text中取出不符合pattern格式的值</span><br><span class="line"></span><br><span class="line"><span class="constructor">$(<span class="params">wildcard</span> <span class="params">pattern</span>)</span>             #patttern定义了文件名的格式</span><br><span class="line">                                #wildcard取出其中存在的格式</span><br><span class="line"></span><br><span class="line"><span class="constructor">$(<span class="params">parsubst</span> <span class="params">pattern</span>, <span class="params">replacement</span>, $(<span class="params">var</span>)</span>)</span><br><span class="line">                                #从var中取出每个值,符合pattern格式的,替换成replacement格式</span><br></pre></td></tr></table></figure>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dbc7bef54cd3f9374f0169.jpg"/></div>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dbc824f54cd3f937516fca.jpg"/></div>
+
+<h2 id="Makefile-实例"><a href="#Makefile-实例" class="headerlink" title="Makefile 实例"></a>Makefile 实例</h2><div class="note success"><p>当我们更新.h文件里的宏定义时,make并不会更新,因为Makefile里并没有联系起来</p></div>
+
+<p>.c 文件里,这么多.h 文件,我们要怎么才能将这么多.h 文件全部联系起来呢?</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">gcc -M c.c                      <span class="meta">#打印出依赖</span></span><br><span class="line"></span><br><span class="line">gcc -M -MF c.d c.c              <span class="meta">#把依赖写入c.d</span></span><br><span class="line"></span><br><span class="line">gcc -c -o c.o c.c -MD -MF c.d   <span class="meta">#编译c.o,把依赖写入文件c.d</span></span><br><span class="line"></span><br><span class="line">CFLAGS                          <span class="meta">#gcc编译器选项</span></span><br><span class="line">                                <span class="meta">#-g：生成调试信息</span></span><br><span class="line">                                <span class="meta">#-Wall：输出全部的告警信息</span></span><br><span class="line">                                <span class="meta">#-I./<span class="keyword">include</span>：添加头文件搜索目录./<span class="keyword">include</span></span></span><br><span class="line">                                <span class="meta">#-I./<span class="keyword">include</span>/tinyalsa：添加头文件搜索目录./<span class="keyword">include</span>/tinyalsa</span></span><br><span class="line">                                <span class="meta">#-Wl,--whole-archive -lpthread：将libpthread.so及以后的库中的所有符号都链接进可执行目标文件</span></span><br><span class="line">                                <span class="meta">#-Wl,--no-whole-archive：关闭之前的-Wl,--whole-archive -lpthread 选项</span></span><br><span class="line">                                <span class="meta">#LDFLAGS = -L./lib，将makefile当前目录下的、lib文件夹添加到库文件搜索目录</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">objs = a.o b.o c.o ...</span><br><span class="line"></span><br><span class="line">dep_files := <span class="variable">$(<span class="built_in">patsubst</span> %, .%.d, <span class="variable">$(objs)</span>)</span></span><br><span class="line">dep_files := <span class="variable">$(<span class="built_in">wildcard</span> <span class="variable">$(dep_files)</span>)</span></span><br><span class="line"></span><br><span class="line">CFLAGS = -Werror -I.</span><br><span class="line"></span><br><span class="line"><span class="section">test: <span class="variable">$(objs)</span></span></span><br><span class="line">    gcc -o test <span class="variable">$^</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(dep_files)</span>,)</span><br><span class="line">    <span class="keyword">include</span> <span class="variable">$(dep_files)</span></span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"></span><br><span class="line"><span class="section">%.o:%.c</span></span><br><span class="line">    gcc -c -o <span class="variable">$@</span> <span class="variable">$&lt;</span> -MD -MF .<span class="variable">$@</span>.d</span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">    rm *.o test</span><br><span class="line"></span><br><span class="line"><span class="section">distclean:</span></span><br><span class="line">    rm <span class="variable">$(dep_files)</span></span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="keyword">.PHONY</span>: clean</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="通用-Makefile"><a href="#通用-Makefile" class="headerlink" title="通用 Makefile"></a>通用 Makefile</h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">CROSS_COMPILE =</span><br><span class="line">AS		= <span class="variable">$(CROSS_COMPILE)</span>as</span><br><span class="line">LD		= <span class="variable">$(CROSS_COMPILE)</span>ld</span><br><span class="line">CC		= <span class="variable">$(CROSS_COMPILE)</span>gcc</span><br><span class="line">CPP		= <span class="variable">$(CC)</span> -E</span><br><span class="line">AR		= <span class="variable">$(CROSS_COMPILE)</span>ar</span><br><span class="line">NM		= <span class="variable">$(CROSS_COMPILE)</span>nm</span><br><span class="line"></span><br><span class="line">STRIP		= <span class="variable">$(CROSS_COMPILE)</span>strip</span><br><span class="line">OBJCOPY		= <span class="variable">$(CROSS_COMPILE)</span>objcopy</span><br><span class="line">OBJDUMP		= <span class="variable">$(CROSS_COMPILE)</span>objdump</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> AS LD CC CPP AR NM</span><br><span class="line"><span class="keyword">export</span> STRIP OBJCOPY OBJDUMP</span><br><span class="line"></span><br><span class="line">CFLAGS := -Wall -O2 -g</span><br><span class="line">CFLAGS += -I <span class="variable">$(<span class="built_in">shell</span> pwd)</span>/<span class="keyword">include</span></span><br><span class="line"></span><br><span class="line">LDFLAGS :=</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> CFLAGS LDFLAGS</span><br><span class="line"></span><br><span class="line">TOPDIR := <span class="variable">$(<span class="built_in">shell</span> pwd)</span></span><br><span class="line"><span class="keyword">export</span> TOPDIR</span><br><span class="line"></span><br><span class="line">TARGET := test</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">obj-y += main.o //需要修改为自己的</span><br><span class="line">obj-y += sub.o</span><br><span class="line">obj-y += a/     //修改为自己的子目录</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">all : start_recursive_build <span class="variable">$(TARGET)</span></span><br><span class="line">	@echo <span class="variable">$(TARGET)</span> has been built!</span><br><span class="line"></span><br><span class="line"><span class="section">start_recursive_build:</span></span><br><span class="line">	make -C ./ -f <span class="variable">$(TOPDIR)</span>/Makefile.build</span><br><span class="line"></span><br><span class="line"><span class="variable">$(TARGET)</span> : built-in.o</span><br><span class="line">	<span class="variable">$(CC)</span> -o <span class="variable">$(TARGET)</span> built-in.o <span class="variable">$(LDFLAGS)</span></span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">	rm -f <span class="variable">$(<span class="built_in">shell</span> find -name &quot;*.o&quot;)</span></span><br><span class="line">	rm -f <span class="variable">$(TARGET)</span></span><br><span class="line"></span><br><span class="line"><span class="section">distclean:</span></span><br><span class="line">	rm -f <span class="variable">$(<span class="built_in">shell</span> find -name &quot;*.o&quot;)</span></span><br><span class="line">	rm -f <span class="variable">$(<span class="built_in">shell</span> find -name &quot;*.d&quot;)</span></span><br><span class="line">	rm -f <span class="variable">$(TARGET)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">PHONY := __build</span><br><span class="line"><span class="section">__build:</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">obj-y :=</span><br><span class="line">subdir-y :=</span><br><span class="line">EXTRA_CFLAGS :=</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> Makefile</span><br><span class="line"></span><br><span class="line"><span class="comment"># obj-y := a.o b.o c/ d/</span></span><br><span class="line"><span class="comment"># $(filter %/, $(obj-y))   : c/ d/</span></span><br><span class="line"><span class="comment"># __subdir-y  : c d</span></span><br><span class="line"><span class="comment"># subdir-y    : c d</span></span><br><span class="line">__subdir-y	:= <span class="variable">$(<span class="built_in">patsubst</span> %/,%,$(<span class="built_in">filter</span> %/, $(obj-y)</span>))</span><br><span class="line">subdir-y	+= $(__subdir-y)</span><br><span class="line"></span><br><span class="line"><span class="comment"># c/built-in.o d/built-in.o</span></span><br><span class="line">subdir_objs := <span class="variable">$(<span class="built_in">foreach</span> f,$(subdir-y)</span>,<span class="variable">$(f)</span>/built-in.o)</span><br><span class="line"></span><br><span class="line"><span class="comment"># a.o b.o</span></span><br><span class="line">cur_objs := <span class="variable">$(<span class="built_in">filter</span>-out %/, $(obj-y)</span>)</span><br><span class="line">dep_files := <span class="variable">$(<span class="built_in">foreach</span> f,<span class="variable">$(cur_objs)</span>,.<span class="variable">$(f)</span>.d)</span></span><br><span class="line">dep_files := <span class="variable">$(<span class="built_in">wildcard</span> <span class="variable">$(dep_files)</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(dep_files)</span>,)</span><br><span class="line">  <span class="keyword">include</span> <span class="variable">$(dep_files)</span></span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">PHONY += $(subdir-y)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__build : $(subdir-y) built-in.o</span><br><span class="line"></span><br><span class="line"><span class="section">$(subdir-y):</span></span><br><span class="line">	make -C <span class="variable">$@</span> -f <span class="variable">$(TOPDIR)</span>/Makefile.build</span><br><span class="line"></span><br><span class="line">built-in.o : <span class="variable">$(cur_objs)</span> <span class="variable">$(subdir_objs)</span></span><br><span class="line">	<span class="variable">$(LD)</span> -r -o <span class="variable">$@</span> <span class="variable">$^</span></span><br><span class="line"></span><br><span class="line">dep_file = .<span class="variable">$@</span>.d</span><br><span class="line"></span><br><span class="line">%.o : %.c</span><br><span class="line">	<span class="variable">$(CC)</span> <span class="variable">$(CFLAGS)</span> <span class="variable">$(EXTRA_CFLAGS)</span> $(CFLAGS_<span class="variable">$@</span>) -Wp,-MD,<span class="variable">$(dep_file)</span> -c -o <span class="variable">$@</span> <span class="variable">$&lt;</span></span><br><span class="line"></span><br><span class="line">.PHONY : <span class="variable">$(PHONY)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">EXTRA_CFLAGS </span>:= -D <span class="built_in">DEBUG</span>            <span class="comment">#-D 宏定义一个参数</span></span><br><span class="line">CFLAGS_sub3.o := -D DEBUG_SUB3</span><br><span class="line"></span><br><span class="line">obj-y += <span class="keyword">sub2.o </span>                    <span class="comment">#自己的文件</span></span><br><span class="line">obj-y += <span class="keyword">sub3.o</span></span><br></pre></td></tr></table></figure>
+
+<div align=center><img  src ="https://pic.imgdb.cn/item/62dbe11ef54cd3f937e0dfe3.jpg"/></div>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux-%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/" rel="tag"># linux-应用开发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/07/21/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-2%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B/" rel="prev" title="linux 应用开发-2 编译过程">
+                  <i class="fa fa-chevron-left"></i> linux 应用开发-2 编译过程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/07/24/linux%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91-4%E6%96%87%E4%BB%B6IO/" rel="next" title="linux 应用开发-4文件IO">
+                  linux 应用开发-4文件IO <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiudi</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+<div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("07/1/2022 00:00:00");
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+</div>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<div class="moon-menu">
+  <div class="moon-menu-items">
+    
+    <div id="moon-menu-item-back2bottom" class="moon-menu-item">
+      <i class='fas fa-chevron-down'></i>    </div>
+    
+    <div id="moon-menu-item-back2top" class="moon-menu-item">
+      <i class='fas fa-chevron-up'></i>    </div>
+    
+  </div>
+  <div class="moon-menu-button">
+    <svg class="moon-menu-bg">
+      <circle class="moon-menu-cricle" cx="50%" cy="50%" r="44%"></circle>
+      <circle class="moon-menu-border" cx="50%" cy="50%" r="48%"></circle>
+    </svg>
+    <div class="moon-menu-content">
+      <div class="moon-menu-icon"><i class='fas fa-ellipsis-v'></i></div>
+      <div class="moon-menu-text"></div>
+    </div>
+  </div>
+</div><script src="/js/injector.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":300,"height":450},"mobile":{"show":true},"log":false});</script></body>
+</html>

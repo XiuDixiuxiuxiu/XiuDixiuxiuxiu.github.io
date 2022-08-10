@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="msp430 笔记——io 口   msp430 笔记——io 口 1、io 口类型 2、io 口寄存器 3、按键 led 实验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="msp430笔记——io口">
+<meta property="og:url" content="http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94io%E5%8F%A3/index.html">
+<meta property="og:site_name" content="Xiudi&#39;s Blog">
+<meta property="og:description" content="msp430 笔记——io 口   msp430 笔记——io 口 1、io 口类型 2、io 口寄存器 3、按键 led 实验">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-06-20T15:44:25.000Z">
+<meta property="article:modified_time" content="2022-07-24T10:21:55.011Z">
+<meta property="article:author" content="Xiudi">
+<meta property="article:tag" content="msp430笔记">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94io%E5%8F%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94io%E5%8F%A3/","path":"2022/06/20/msp430笔记——io口/","title":"msp430笔记——io口"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>msp430笔记——io口 | Xiudi's Blog</title>
+  
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/injector/main.css" /><link rel="preload" as="style" href="/css/injector/light.css" /><link rel="preload" as="style" href="/css/injector/dark.css" />
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+
+<!-- 爆炸红心效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="//cdn.bootcss.com/animejs/2.2.0/anime.min.js"></script> 
+<script type="text/javascript" src="/js/firework.js"></script>
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Xiudi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#msp430-%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94io-%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">msp430 笔记——io 口</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1%E3%80%81io-%E5%8F%A3%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1、io 口类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%E3%80%81io-%E5%8F%A3%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">2、io 口寄存器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3%E3%80%81%E6%8C%89%E9%94%AE-led-%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.3.</span> <span class="nav-text">3、按键 led 实验</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xiudi"
+      src="/images/header.jpg">
+  <p class="site-author-name" itemprop="name">Xiudi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/XiuDixiuxiuxiu" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;XiuDixiuxiuxiu" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll site-overview-item animated">
+    <div class="links-of-blogroll-title"><i class="fa fa-envelope fa-fw"></i>
+      xiudixiuxiuxiu@163.com
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/178489862" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;178489862" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://hexo.io/" title="https:&#x2F;&#x2F;hexo.io" rel="noopener" target="_blank">Hexo</a>
+        </li>
+    </ul>
+  </div>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94io%E5%8F%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/header.jpg">
+      <meta itemprop="name" content="Xiudi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="msp430笔记——io口 | Xiudi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          msp430笔记——io口
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-20 23:44:25" itemprop="dateCreated datePublished" datetime="2022-06-20T23:44:25+08:00">2022-06-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-24 18:21:55" itemprop="dateModified" datetime="2022-07-24T18:21:55+08:00">2022-07-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/msp430/" itemprop="url" rel="index"><span itemprop="name">msp430</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="msp430-笔记——io-口"><a href="#msp430-笔记——io-口" class="headerlink" title="msp430 笔记——io 口"></a>msp430 笔记——io 口</h1><!-- TOC -->
+
+<ul>
+<li><a href="#msp430-%E7%AC%94%E8%AE%B0io-%E5%8F%A3">msp430 笔记——io 口</a><ul>
+<li><a href="#1io-%E5%8F%A3%E7%B1%BB%E5%9E%8B">1、io 口类型</a></li>
+<li><a href="#2io-%E5%8F%A3%E5%AF%84%E5%AD%98%E5%99%A8">2、io 口寄存器</a></li>
+<li><a href="#3%E6%8C%89%E9%94%AE-led-%E5%AE%9E%E9%AA%8C">3、按键 led 实验</a></li>
+</ul>
+</li>
+</ul>
+<!-- /TOC -->
+
+<span id="more"></span>
+
+<h2 id="1、io-口类型"><a href="#1、io-口类型" class="headerlink" title="1、io 口类型"></a>1、io 口类型</h2><ul>
+<li>可独立编程的 I&#x2F;O 管脚</li>
+<li>输入或输出可任意组合</li>
+<li>可独立设置的 P1 和 P2 中断，某些器件可能还有其他中断口 39、独立的输入、输出数据寄存器</li>
+<li>可独立配置的上拉或下拉电阻</li>
+</ul>
+<p>其中只有 P1 和 P2 有中断能力，所有 P1 口的 I&#x2F;O 管脚中断都来源于**<em>同一个</em>**中断向量 P1IV，</p>
+<p>​ 而所有 P2 口的中断都来源于**<em>不同的单一</em>**中断向量 P2IV。</p>
+<h2 id="2、io-口寄存器"><a href="#2、io-口寄存器" class="headerlink" title="2、io 口寄存器"></a>2、io 口寄存器</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入寄存器——PxIN</span><br><span class="line">	例：P1IN P2IN...</span><br><span class="line">	   判断按键按下——<span class="keyword">if</span>((P1IN &amp; BIT1)==<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输出寄存器——PxOUT</span><br><span class="line">	例：P1OUT P2OUT...</span><br><span class="line">	   输出高低电平——P1OUT <span class="meta">&amp;= ~BIT0 （低）</span></span><br><span class="line">	   			   P1OUT <span class="string">|= BIT1  （高）</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">输入/输出方向寄存器——PxDIR</span><br><span class="line">	不论管脚的功能，PxDIR 寄存器中的每一位选择相应 I/O 管脚的方向。当管脚被设置为其它功能	时，PxDIR 位必须按照其他功能的需要进行设置。</span><br><span class="line"></span><br><span class="line">	Bit = <span class="number">0</span>：管脚为输入方向</span><br><span class="line">	Bit = <span class="number">1</span>：管脚为输出方向</span><br><span class="line"></span><br><span class="line">	所以，输出应该这样：		P1DIR <span class="string">|= BIT0;</span></span><br><span class="line">  						  P1OUT <span class="meta">&amp;= ~BIT0;</span></span><br><span class="line"></span><br><span class="line">         输入应该这样：	  P1DIR <span class="meta">&amp;= ~BIT1;</span></span><br><span class="line">                          P1REN <span class="string">|= BIT1;</span></span><br><span class="line">                          P1OUT <span class="string">|= BIT1;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">上拉/下拉电阻能寄存器——PxREN</span><br><span class="line">    PxREN 寄存器中的每一位可以使能/禁止相应 I/O 管脚的上拉/下拉电阻。</span><br><span class="line">    PxOUT 寄存器中对应的位选择管脚是否包含上拉或下拉电阻。</span><br><span class="line"></span><br><span class="line">    Bit <span class="operator">=</span> <span class="number">0</span>：上拉、下拉寄存器禁止</span><br><span class="line">    Bit <span class="operator">=</span> <span class="number">1</span>：上拉、下拉寄存器使能</span><br><span class="line"></span><br><span class="line">    输出不需要上拉电阻或下拉电阻，所以不需要设置</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>PxDIR</th>
+<th>PxREN</th>
+<th>PxOUT</th>
+<th>I&#x2F;O 口配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>x</td>
+<td>输入</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>下拉输入</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>上拉输入</td>
+</tr>
+<tr>
+<td>1</td>
+<td>x</td>
+<td>x</td>
+<td>输出</td>
+</tr>
+</tbody></table>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输出驱动能力增强寄存器——PxDS</span><br><span class="line">	PxDS 寄存器的每一位选择全驱动或弱驱动。默认的是弱驱动能力。</span><br><span class="line"></span><br><span class="line">	Bit <span class="operator">=</span> <span class="number">0</span>：弱驱动</span><br><span class="line">	Bit <span class="operator">=</span> <span class="number">1</span>：全驱动</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">功能选择寄存器——<span class="variable">PxSEL</span></span><br><span class="line">	端口管脚经常与其他外围模块复用，参考芯片数据手册确定管脚功能。每个<span class="variable">PxSEL</span> 位选择对应管脚	  的功能——普通 <span class="built_in">I</span><span class="operator">/</span><span class="built_in">O</span> 功能或外围模块功能。</span><br><span class="line"></span><br><span class="line">	<span class="variable">Bit</span> <span class="operator">=</span> <span class="number">0</span>：<span class="built_in">I</span><span class="operator">/</span><span class="built_in">O</span> 口功能</span><br><span class="line">	<span class="variable">Bit</span> <span class="operator">=</span> <span class="number">1</span>：外围模块功能</span><br><span class="line"></span><br><span class="line">	（注意）当<span class="variable">PxSEL</span><span class="operator">=</span><span class="number">1</span>时，禁止<span class="variable">P1</span>和<span class="variable">P2</span>口的中断功能</span><br><span class="line">		置位任何<span class="variable">PxSEL</span>位，将禁止相应管脚的<span class="built_in">I</span><span class="operator">/</span><span class="built_in">O</span>口中断功能。因此，无论相应<span class="variable">P1IE</span>和<span class="variable">P2IE</span>寄存			器状态如何，这些管脚的信号不能产生<span class="variable">P1</span>或<span class="variable">P2</span>口中断。</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、按键-led-实验"><a href="#3、按键-led-实验" class="headerlink" title="3、按键 led 实验"></a>3、按键 led 实验</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;msp430f5529.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">delay</span><span class="params">(<span class="type">int</span> time)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(;time&gt;<span class="number">0</span>;time--)</span><br><span class="line">        __delay_cycles(<span class="number">1000</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">  WDTCTL = WDTPW | WDTHOLD;                   <span class="comment">//关闭看门狗</span></span><br><span class="line">  P1DIR |= BIT0;                              <span class="comment">//设置P1.0为输出</span></span><br><span class="line">  P1OUT &amp;= ~BIT0;                             <span class="comment">//P1.0低电平</span></span><br><span class="line"></span><br><span class="line">  P1DIR &amp;= ~BIT1;                             <span class="comment">//设置P1.1为输入</span></span><br><span class="line">  P1REN |= BIT1;                              <span class="comment">//上拉电阻输入</span></span><br><span class="line">  P1OUT |= BIT1;                              <span class="comment">//设置P1.1为高电平状态</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">  &#123;</span><br><span class="line">      <span class="keyword">if</span>((P1IN &amp; BIT1)==<span class="number">0</span>)&#123;                   <span class="comment">//检测S1按下 P1.1</span></span><br><span class="line">          P1OUT ^= BIT0;                      <span class="comment">//取反P1.0的输出</span></span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/msp430%E7%AC%94%E8%AE%B0/" rel="tag"># msp430笔记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/06/20/msp430%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E4%B8%AD%E6%96%AD/" rel="next" title="msp430笔记——中断">
+                  msp430笔记——中断 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiudi</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+<div>
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("07/1/2022 00:00:00");
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+</div>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<div class="moon-menu">
+  <div class="moon-menu-items">
+    
+    <div id="moon-menu-item-back2bottom" class="moon-menu-item">
+      <i class='fas fa-chevron-down'></i>    </div>
+    
+    <div id="moon-menu-item-back2top" class="moon-menu-item">
+      <i class='fas fa-chevron-up'></i>    </div>
+    
+  </div>
+  <div class="moon-menu-button">
+    <svg class="moon-menu-bg">
+      <circle class="moon-menu-cricle" cx="50%" cy="50%" r="44%"></circle>
+      <circle class="moon-menu-border" cx="50%" cy="50%" r="48%"></circle>
+    </svg>
+    <div class="moon-menu-content">
+      <div class="moon-menu-icon"><i class='fas fa-ellipsis-v'></i></div>
+      <div class="moon-menu-text"></div>
+    </div>
+  </div>
+</div><script src="/js/injector.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/koharu.model.json"},"display":{"position":"left","width":300,"height":450},"mobile":{"show":true},"log":false});</script></body>
+</html>
